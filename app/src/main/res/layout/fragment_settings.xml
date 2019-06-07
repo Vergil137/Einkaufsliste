@@ -3,12 +3,12 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".SettingsFragment">
+	tools:context=".SettingsFragment"
+	android:padding="@dimen/frame_padding">
 
-	<!-- TODO: Update blank fragment layout -->
-	<TextView
+	<Switch
+		android:id="@+id/sw_theme"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:text="@string/menu_maps" />
-
+		android:layout_height="wrap_content"
+		android:text="@string/settings_theme" />
 </FrameLayout>
