@@ -1,6 +1,9 @@
 package com.example.einkaufsliste;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -10,9 +13,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,10 +48,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 		// Required empty public constructor
 	}
 
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-							 Bundle savedInstanceState) {
+	                         Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
 		View v = inflater.inflate(R.layout.fragment_map, container, false);
 
@@ -83,23 +87,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 		UiSettings uiSettings = mMap.getUiSettings();
 		uiSettings.setMapToolbarEnabled(true);
 		uiSettings.setCompassEnabled(true);
-//		uiSettings.setAllGesturesEnabled(true);
+		uiSettings.setAllGesturesEnabled(true);
 		uiSettings.setZoomControlsEnabled(true);
+		uiSettings.setMyLocationButtonEnabled(true);
 
 		if (mMap.isMyLocationEnabled()) {
-			uiSettings.setMyLocationButtonEnabled(true);
 			locate();
-//			mMap.moveCamera(CameraUpdateFactory.);
-		}else{
-			if(Geocoder.isPresent()){
+		} else {
+			if (Geocoder.isPresent()) {
 				try {
 					String location = "Bern";
 					Geocoder gc = new Geocoder(getContext());
-					List<Address> addresses= gc.getFromLocationName(location, 5); // get the found Address Objects
+					List<Address> addresses = gc.getFromLocationName(location, 5); // get the found Address Objects
 
 					List<LatLng> ll = new ArrayList<LatLng>(addresses.size()); // A list to save the coordinates if they are available
-					for(Address a : addresses){
-						if(a.hasLatitude() && a.hasLongitude()){
+					for (Address a : addresses) {
+						if (a.hasLatitude() && a.hasLongitude()) {
 							ll.add(new LatLng(a.getLatitude(), a.getLongitude()));
 						}
 					}
@@ -117,23 +120,65 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 	protected void checkPermission() {
 		if (checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
 				== PackageManager.PERMISSION_GRANTED) {
-			if (!mMap.isMyLocationEnabled()) mMap.setMyLocationEnabled(true);
+			if (!mMap.isMyLocationEnabled()) {
+				enableLocation();
+
+				mMap.setMyLocationEnabled(true);
+			}
 		} else {
 			if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(),
 					android.Manifest.permission.ACCESS_FINE_LOCATION)) {
 				// Show an explanation to the user *asynchronously* -- don't block
 				// this thread waiting for the user's response! After the user
 				// sees the explanation, try again to request the permission.
+				DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+							case DialogInterface.BUTTON_POSITIVE:
+								requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+										MY_LOCATION_REQUEST_CODE);
+								break;
+							default:
+								break;
+						}
+					}
+				};
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+				builder.setMessage(R.string.ask_location_permission).setPositiveButton(R.string.yes, dialogListener).setNegativeButton(R.string.no, dialogListener).show();
+				Log.println(Log.ASSERT, TAG, "check1");
 			} else {
 				// No explanation needed; request the permission
 				requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
 						MY_LOCATION_REQUEST_CODE);
+				Log.println(Log.ASSERT, TAG, "check2");
 
 				// MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
 				// app-defined int constant. The callback method gets the
 				// result of the request.
 			}
 		}
+	}
+
+	protected void enableLocation() {
+		DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+//				checkPermission();
+				switch (which) {
+					case DialogInterface.BUTTON_POSITIVE:
+						Log.println(Log.ASSERT, TAG, "true");
+						startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+						mMap.setMyLocationEnabled(true);
+						break;
+					default:
+				}
+			}
+		};
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+		builder.setMessage(R.string.ask_location).setIcon(R.drawable.ic_place_black_24dp).setTitle(R.string.menu_maps).setPositiveButton(R.string.yes, dialogListener).setNegativeButton(R.string.no, dialogListener).show();
 	}
 
 	@Override
@@ -145,9 +190,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 				if (grantResults.length > 0
 						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 					// Permission granted
-					mMap.setMyLocationEnabled(true);
+					enableLocation();
 
 				} else {
+					Log.println(Log.ASSERT, TAG, "RequestFalse");
 					mMap.setMyLocationEnabled(false);
 					// permission denied, boo! Disable the
 					// functionality that depends on this permission.
@@ -160,7 +206,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 	}
 
 	private void locate() throws SecurityException {
-		LocationManager locM = getSystemService(getContext(),LocationManager.class);
+		LocationManager locM = getSystemService(getContext(), LocationManager.class);
 		if (locM == null) {
 			return;
 		}
@@ -168,7 +214,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 		if (loc != null) {
 			LatLng pos = new LatLng(loc.getLatitude(), loc.getLongitude());
 //			mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
-			mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos,15));
+			mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 15));
 		}
 	}
 }
