@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 
 /**
@@ -13,6 +14,10 @@ import android.view.ViewGroup;
  */
 public class PlacesFragment extends Fragment {
 
+	ListView listView;
+	String[] nameArray;
+	String[] infoArray;
+	Integer[] imageArray;
 
 	public PlacesFragment() {
 		// Required empty public constructor
@@ -21,7 +26,9 @@ public class PlacesFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-							 Bundle savedInstanceState) {
+	                         Bundle savedInstanceState) {
+		PlacesFragmentAdapter adapter = new PlacesFragmentAdapter(getActivity(), nameArray, infoArray, imageArray);
+
 		// Inflate the layout for this fragment
 		return inflater.inflate(R.layout.fragment_places, container, false);
 	}

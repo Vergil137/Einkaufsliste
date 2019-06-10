@@ -1,9 +1,14 @@
 package com.example.einkaufsliste;
 
 
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +22,7 @@ import android.widget.Switch;
  */
 public class SettingsFragment extends Fragment implements OnCheckedChangeListener {
 
+	Switch sw;
 	public SettingsFragment() {
 		// Required empty public constructor
 	}
@@ -32,7 +38,7 @@ public class SettingsFragment extends Fragment implements OnCheckedChangeListene
 	public void onStart() {
 		super.onStart();
 		View v = this.getView();
-		Switch sw = v.findViewById(R.id.sw_theme);
+		sw = v.findViewById(R.id.sw_theme);
 		sw.setOnCheckedChangeListener(this);
 	}
 

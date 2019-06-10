@@ -150,12 +150,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 				builder.setMessage(R.string.ask_location_permission).setPositiveButton(R.string.yes, dialogListener).setNegativeButton(R.string.no, dialogListener).show();
-				Log.println(Log.ASSERT, TAG, "check1");
 			} else {
 				// No explanation needed; request the permission
 				requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
 						MY_LOCATION_REQUEST_CODE);
-				Log.println(Log.ASSERT, TAG, "check2");
 
 				// MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
 				// app-defined int constant. The callback method gets the
@@ -171,7 +169,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //				checkPermission();
 				switch (which) {
 					case DialogInterface.BUTTON_POSITIVE:
-						Log.println(Log.ASSERT, TAG, "true");
 						startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 						mMap.setMyLocationEnabled(true);
 						break;
@@ -196,7 +193,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 					enableLocation();
 
 				} else {
-					Log.println(Log.ASSERT, TAG, "RequestFalse");
 					mMap.setMyLocationEnabled(false);
 					// permission denied, boo! Disable the
 					// functionality that depends on this permission.
