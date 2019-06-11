@@ -6,7 +6,7 @@
 	<string name="menu_places">Orte</string>
 	<string name="settings_theme">Wechsle zum DarkTheme</string>
 	<string name="ask_location">Wollen Sie den Standort aktivieren?</string>
-	<string name="yes">Ja</string>
 	<string name="no">Nein</string>
 	<string name="ask_location_permission">Um nahe Supermärkte anzuzeigen, benötigt die App berechtigung auf Ihren Standort.\nWollen Sie dies erlauben?</string>
+	<string name="yes">Ja</string>
 </resources>

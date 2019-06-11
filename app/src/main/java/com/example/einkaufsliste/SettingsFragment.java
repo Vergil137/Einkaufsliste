@@ -2,6 +2,7 @@ package com.example.einkaufsliste;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,12 +53,19 @@ public class SettingsFragment extends Fragment implements OnCheckedChangeListene
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		savePref(getString(R.string.setting_theme), isChecked);
-		if (isChecked) {
-			getActivity().getApplication().setTheme(R.style.DarkTheme);
-		} else {
-			getActivity().getApplication().setTheme(R.style.AppTheme);
-		}
+//		if (isChecked) {
+//			getActivity().getApplication().setTheme(R.style.DarkTheme);
+//		} else {
+//			getActivity().getApplication().setTheme(R.style.AppTheme);
+//		}
+//		TaskStackBuilder.create(getActivity())
+//				.addNextIntent(new Intent(getActivity(), MainActivity.class))
+//				.addNextIntent(getActivity().getIntent()).addNextIntent(getFragmentManager().beginTransaction().replace(this, this))
+//				.startActivities();
 		getActivity().recreate();
+//		getFragmentManager().beginTransaction().attach(this).commit();
+//		((MainActivity)getActivity()).loadFragment(getFragmentManager().findFragmentById(this.getId()));
+
 	}
 
 	protected void savePref(String key, boolean isChecked) {
