@@ -3,6 +3,7 @@ package com.example.einkaufsliste;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -24,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
 //https://developers.google.com/android/guides/setup
 
@@ -60,28 +63,31 @@ public class PlacesFragment extends Fragment {
 				FindCurrentPlaceRequest.builder(placeFields).build();
 
 // Call findCurrentPlace and handle the response (first check that the user has granted permission).
-		if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+		if (checkSelfPermission(getContext(),ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 			Task<FindCurrentPlaceResponse> placeResponse = placesClient.findCurrentPlace(request);
-			placeResponse.addOnCompleteListener(task -> {
-				if (task.isSuccessful()){
-					FindCurrentPlaceResponse response = task.getResult();
-					for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-						Log.i("Places", String.format("Place '%s' has likelihood: %f",
-								placeLikelihood.getPlace().getName(),
-								placeLikelihood.getLikelihood()));
-					}
-				} else {
-					Exception exception = task.getException();
-					if (exception instanceof ApiException) {
-						ApiException apiException = (ApiException) exception;
-						Log.e("t", "Place not found: " + apiException.getStatusCode());
+			placeResponse.addOnCompleteListener(new OnCompleteListener<FindCurrentPlaceResponse>() {
+				@Override
+				public void onComplete(@NonNull Task<FindCurrentPlaceResponse> task) {
+					if (task.isSuccessful()) {
+						FindCurrentPlaceResponse response = task.getResult();
+						for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
+							Log.i("Places", String.format("Place '%s' has likelihood: %f",
+									placeLikelihood.getPlace().getName(),
+									placeLikelihood.getLikelihood()));
+						}
+					} else {
+						Exception exception = task.getException();
+						if (exception instanceof ApiException) {
+							ApiException apiException = (ApiException) exception;
+							Log.e("t", "Place not found: " + apiException.getStatusCode());
+						}
 					}
 				}
 			});
 		} else {
 			// A local method to request required permissions;
 			// See https://developer.android.com/training/permissions/requesting
-			getLocationPermission();
+//			getLocationPermission();
 		}
 //		PlacesFragmentAdapter adapter = new PlacesFragmentAdapter(getActivity(), nameArray, infoArray, imageArray);
 		// Inflate the layout for this fragment
