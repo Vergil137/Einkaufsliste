@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+//https://developers.google.com/android/guides/setup
+
 
 /**
  * A simple {@link Fragment} subclass.

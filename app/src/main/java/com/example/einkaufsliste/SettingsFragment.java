@@ -1,6 +1,7 @@
 package com.example.einkaufsliste;
 
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import android.widget.Switch;
 public class SettingsFragment extends Fragment implements OnCheckedChangeListener {
 
 	Switch sw;
+	SharedPreferences preferences;
+
 	public SettingsFragment() {
 		// Required empty public constructor
 	}
@@ -39,15 +42,25 @@ public class SettingsFragment extends Fragment implements OnCheckedChangeListene
 		super.onStart();
 		View v = this.getView();
 		sw = v.findViewById(R.id.sw_theme);
+		preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+		sw.setChecked(preferences.getBoolean(getString(R.string.setting_theme),false));
 		sw.setOnCheckedChangeListener(this);
 	}
 
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		savePref(getString(R.string.setting_theme), isChecked);
 		if (isChecked) {
 			getActivity().getApplication().setTheme(R.style.DarkTheme);
 		} else {
 			getActivity().getApplication().setTheme(R.style.AppTheme);
 		}
+		getActivity().recreate();
+	}
+
+	protected void savePref(String key, boolean isChecked) {
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean(key, isChecked);
+		editor.commit();
 	}
 }

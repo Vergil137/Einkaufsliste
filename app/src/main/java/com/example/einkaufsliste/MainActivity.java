@@ -1,5 +1,7 @@
 package com.example.einkaufsliste;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -14,11 +16,22 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		applyTheme();
 //		setTheme(R.style.DarkTheme);
 		setContentView(R.layout.activity_main);
 		BottomNavigationView navView = findViewById(R.id.nav_view);
 		navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 		loadFragment(new ShopListFragment());
+	}
+
+	protected void applyTheme() {
+		SharedPreferences theme = getPreferences(Context.MODE_PRIVATE);
+		boolean b = theme.getBoolean(getString(R.string.setting_theme), false);
+		if (b) {
+			setTheme(R.style.DarkTheme);
+		} else {
+			setTheme(R.style.AppTheme);
+		}
 	}
 
 	private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener

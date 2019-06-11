@@ -5,12 +5,11 @@
 	<string name="menu_places">Places</string>
 	<string name="menu_maps">Maps</string>
 	<string name="menu_settings">Settings</string>
-
-	<!-- TODO: Remove or change this placeholder text -->
 	<string name="hello_blank_fragment">Hello blank fragment</string>
 	<string name="settings_theme">Switch to DarkTheme</string>
 	<string name="ask_location">Do you want to enable Location?</string>
 	<string name="yes">Yes</string>
 	<string name="no">No</string>
 	<string name="ask_location_permission">To show nearby Shops, you have to enable Location.\nDo you Grant Permission?</string>
+	<string name="setting_theme" translatable="false">theme</string>
 </resources>
